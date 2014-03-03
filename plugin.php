@@ -56,7 +56,7 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 			add_action( 'wp_enqueue_scripts', array( $this, 'scripts' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'styles' ) );
 			add_filter( 'post_gallery', array( $this, 'gallery'), 10, 2 );
-
+			add_filter( 'media_send_to_editor', array( $this, 'media_filter'), 20, 3);
 		}
 
 		/**
@@ -84,6 +84,19 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 
 		function styles() {
 			wp_enqueue_style( 'fresco_css', plugins_url( 'css/fresco.css', __FILE__ ), false, '1.0', 'screen' );
+		}
+
+
+        	/**
+         	* add fresco data attributes to images inserted into post
+         	*
+         	* @since 1.0
+         	*/
+
+		function media_filter($html, $attachment_id) {
+    			$attachment = get_post($attachment_id);
+    			$html = '<a href="'. wp_get_attachment_url($attachment_id) .'" class="fresco" data-fresco-group="gallery-'.$attachment->post_parent.'"><img src="'. wp_get_attachment_thumb_url($attachment_id) .'"></a>';
+    			return $html;
 		}
 
         	/**
