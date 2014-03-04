@@ -95,9 +95,13 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 
 		function media_filter($html, $attachment_id) {
     			$attachment = get_post($attachment_id);
-			$fresco_attr = sprintf('class="fresco" data-fresco-group="gallery-%s"', $attachment->post_parent);
-    			$html = '<a href="'. wp_get_attachment_url($attachment_id) .'" '. $fresco_attr .'"><img src="'. wp_get_attachment_thumb_url($attachment_id) .'"></a>';
-    			return $html;
+
+			if($attachment->post_mime_type == "image") {
+				$fresco_attr = sprintf('class="fresco" data-fresco-group="gallery-%s"', $attachment->post_parent);
+    				$html = '<a href="'. wp_get_attachment_url($attachment_id) .'" '. $fresco_attr .'"><img src="'. wp_get_attachment_thumb_url($attachment_id) .'"></a>';
+			}
+
+			return $html;
 		}
 
         	/**
@@ -193,14 +197,14 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
         				return $output;
     				}
 
-    				$output = "\n<div class=\"fresco_gallery\">\n";
+    				$output = "\n" . '<div class="fresco_gallery">' . "\n";
 
     				foreach ( $attachments as $id => $attachment ) {
 					$fresco_attr = sprintf('class="fresco" data-fresco-group="gallery-%s" data-fresco-caption="%s"', $post->ID, $post->post_title);
         				$output .= '<a href="'. wp_get_attachment_url($id) .'" '. $fresco_attr. '><img src="'. wp_get_attachment_thumb_url($id) .'" class="fresco_thumbnail"></a>' . "\n";
     				}
 
-    				$output .= "</div>\n";
+    				$output .= "</div>" . "\n";
 
     			return $output;
 		}
