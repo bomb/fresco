@@ -1,12 +1,30 @@
 Fresco Lightbox Plugin for WordPress
 ====================================
 
-This plugin will implement the free and commercial versions of the fresco lightbox.
+This plugin will implement the fresco lightbox into WordPress
 
-Note: You must purchase a copy to use this plugin without the watermark
+Installation Instructions:
 
-Steps to use this Plugin:
+1. Activate the Plugin
 
-1. Download the free or commercial lightbox from http://frescojs.com
-2. Place the css and js files in the respected directories
-3. Create a Gallery using the Gallery Shortcode
+How to use this Plugin for Images:
+
+1. Create a Gallery using the Media Manager, Insert an Image into a Post, or Paste an image URL and let our oEmbed do the work.
+
+How to use this Plugin for YouTube and Vimeo Videos:
+
+1. Paste the url to the YouTube or Vimeo video into a Post
+2. Select an Image to be used as a cover thumbnail for the video
+
+Custom Styling for Images:
+
+If you wish to customize the styling of the images, copy the custom.css in the css directory, over to your theme to a file named fresco_custom.css, the plugin will take your custom css file over the default one.
+
+Plugin Support:
+
+1. Video Thumbnails and Video Thumbnails Pro (for automatic thumbnails)
+2. WooCommerce for product images.
+
+Notice: If you plan on using this on a commercial site please purchase a commercial license, which removes the fresco watermark.
+
+See: http://frescojs.com/license
