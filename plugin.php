@@ -225,7 +225,7 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 		}
 
 		/**
-		 * render select field for fresco UI group settings
+		 * render select field for fresco UI group thumbnail settings
 		 *
 		 * @since 1.0
 		 */
@@ -243,7 +243,7 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 		}
 
 		/**
-		 * render select field for fresco UI group settings
+		 * render select field for fresco woocommerce thumbnail settings
 		 *
 		 * @since 1.0
 		 */
