@@ -9,7 +9,9 @@ Installation Instructions:
 
 How to use this Plugin for Images:
 
-1. Create a Gallery using the Media Manager, Insert an Image into a Post, or Paste an image URL and let our oEmbed do the work.
+1. Create a Gallery using the Media Manager
+2. Insert an Image into a Post
+3. Paste an image URL and let our oEmbed do the work (regular image urls and imgur.com).
 
 How to use this Plugin for YouTube and Vimeo Videos:
 
