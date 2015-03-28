@@ -21,4 +21,10 @@
     margin-right: 0 !important;
 }
 
+.entry-content a {
+    border-bottom: 1px solid #fff !important;
+}
 
+.entry-content a:hover, .entry-content a:focus {
+    border-bottom:1px solid #fff !important;
+}
