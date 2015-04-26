@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name: Fresco Lightbox
- * Plugin URI: http://github.com/chrismccoy
+ * Plugin URI: http://github.com/sugar/fresco
  * Description: Use this plugin to implement the fresco lightbox
  * Version: 1.0
  * Author: Chris McCoy
  * Author URI: http://github.com/chrismccoy
 
- * @copyright 2014
+ * @copyright 2015
  * @author Chris McCoy
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
