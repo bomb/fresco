@@ -1030,7 +1030,12 @@
   background-position: -210px -8px;
   opacity: .8;
 }
-.fr-window-skin-fresco .fr-close:hover .fr-close-icon  { opacity: 1; }
+.fr-window-skin-fresco .fr-close:hover .fr-close-icon { opacity: 1; }
+/* iOS 8.4.1 bug: when opacity changes it'll require 2 taps
+   force a single opacity to fix this
+*/
+.fr-window-skin-fresco.fr-svg.fr-mobile-touch .fr-close .fr-close-icon,
+.fr-window-skin-fresco.fr-mobile-touch .fr-close:hover .fr-close-icon { opacity: 1; }
 
 /* Thumbnails */
 .fr-window-skin-fresco .fr-thumbnail-wrapper {
