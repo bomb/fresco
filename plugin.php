@@ -352,8 +352,10 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 			$types = array('image/jpeg', 'image/gif', 'image/png');
 
 			if(in_array($attachment->post_mime_type, $types) ) {
+				$srcset = (wp_get_attachment_image_srcset( $attachment_id, 'thumbnail')) ? 'srcset="' . wp_get_attachment_image_srcset( $attachment_id, 'thumbnail') . '" ' : '';
+				$sizes = (wp_get_attachment_image_sizes( $attachment_id, 'thumbnail')) ? 'sizes="' . wp_get_attachment_image_sizes( $attachment_id, 'thumbnail') . '"' : '';
 				$fresco_attr = sprintf('class="fresco thumbnail" data-fresco-group="gallery-%s" data-fresco-options="ui: %s"', $attachment->post_parent, $position);
-    				$html = '<a href="'. wp_get_attachment_url($attachment_id) .'" '. $fresco_attr .'><img src="'. wp_get_attachment_thumb_url($attachment_id) .'"></a>';
+    				$html = '<a href="'. wp_get_attachment_url($attachment_id) .'" '. $fresco_attr .'><img src="'. wp_get_attachment_thumb_url($attachment_id) .'" '.  $srcset . $sizes .'></a>';
 			}
 
 			return $html;
@@ -546,8 +548,10 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
     				$output = "\n" . '<div class="fresco_gallery">' . "\n";
 
     				foreach ( $attachments as $id => $attachment ) {
+					$srcset = (wp_get_attachment_image_srcset( $id, 'thumbnail')) ? 'srcset="' . wp_get_attachment_image_srcset( $id, 'thumbnail') . '" ' : '';
+					$sizes = (wp_get_attachment_image_sizes( $id, 'thumbnail')) ? 'sizes="' . wp_get_attachment_image_sizes( $id, 'thumbnail') . '"' : '';
 					$fresco_attr = sprintf('class="fresco thumbnail" data-fresco-group="gallery-%s" data-fresco-caption="%s" data-fresco-group-options="ui: %s, thumbnails: %s"', $post->ID, $post->post_title, $position, $thumbnail_show);
-        				$output .= '<a href="'. wp_get_attachment_url($id) .'" '. $fresco_attr. '><img src="'. wp_get_attachment_thumb_url($id) .'" class="fresco thumbnail"></a>' . "\n";
+	       				$output .= '<a href="'. wp_get_attachment_url($id) .'" '. $fresco_attr. '><img src="'. wp_get_attachment_thumb_url($id) .'" class="fresco thumbnail" '. $srcset . $sizes .'></a>' . "\n";
     				}
 
     				$output .= "</div>" . "\n";
