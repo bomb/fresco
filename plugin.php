@@ -58,6 +58,7 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 			add_filter( 'post_gallery', array( $this, 'gallery'), 10, 2 );
 			add_filter( 'media_send_to_editor', array( $this, 'media_filter'), 20, 3);
 			add_action( 'embed_oembed_html', array( $this, 'embed_html' ), 10, 4);
+			add_action( 'embed_oembed_html', array( $this, 'cloudup_embed_html' ), 10, 4);
 			add_action( 'init', array( $this, 'embeds' ));
 			add_action( 'wp_enqueue_scripts', array( $this, 'woo_remove_lightboxes'), 99 );
 			add_filter('woocommerce_single_product_image_html', array( $this, 'fresco_woocommerce_lightbox'), 99, 1); 
@@ -392,6 +393,24 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 
                      	return $html;
             	}
+
+                /**
+                * filter cloudup images for lightbox
+                *
+                * @since 1.0
+                */
+
+                function cloudup_embed_html( $html, $url, $args, $post_ID ) {
+
+                        if(preg_match('/<a href="(https?:\/\/cloudup\.com\/.*)"><img [^>]*src=\"(https?:\/\/cldup\.com\/[^\"]+)\"[^>]*><\/a>/', $html, $matches)) {
+				$position_option = get_option( 'fresco_settings' );
+				$position = "'" . $position_option['fresco_ui_single'] . "'";
+                                $fresco_attr = sprintf('class="fresco thumbnail" data-fresco-options="side: %s"', $position);
+                                $html = '<a href="'. $matches[2] .'" '. $fresco_attr .'><img src="'. $matches[2].'"></a>';
+                        }
+
+                        return $html;
+                }
 
 
         	/**
