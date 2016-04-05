@@ -7,11 +7,11 @@ Installation Instructions:
 
 1. Activate the Plugin
 
-How to use this Plugin for Images:
+Three Ways to use this Plugin for Images:
 
 1. Create a Gallery using the Media Manager
 2. Insert an Image into a Post
-3. Paste an image URL and let our oEmbed do the work (regular image urls and imgur.com).
+3. Paste an image URL and let our oEmbed do the work (regular image urls, imgur.com, and cloudup.com).
 
 How to use this Plugin for YouTube and Vimeo Videos:
 
