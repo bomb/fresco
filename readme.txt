@@ -25,7 +25,6 @@ If you wish to customize the styling of the images, copy the custom.css in the c
 Plugin Support:
 
 1. Video Thumbnails and Video Thumbnails Pro (for automatic thumbnails)
-2. WooCommerce for product images.
 
 Notice: If you plan on using this on a commercial site please purchase a commercial license, which removes the fresco watermark.
 

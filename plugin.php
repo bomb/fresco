@@ -60,9 +60,6 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 			add_action( 'embed_oembed_html', array( $this, 'embed_html' ), 10, 4);
 			add_action( 'embed_oembed_html', array( $this, 'cloudup_embed_html' ), 10, 4);
 			add_action( 'init', array( $this, 'embeds' ));
-			add_action( 'wp_enqueue_scripts', array( $this, 'woo_remove_lightboxes'), 99 );
-			add_filter('woocommerce_single_product_image_html', array( $this, 'fresco_woocommerce_lightbox'), 99, 1); 
-			add_filter('woocommerce_single_product_image_thumbnail_html', array( $this, 'fresco_woocommerce_lightbox'), 99, 1); 
 			add_action( 'admin_menu', array( $this, 'fresco_add_admin_menu' ));
 			add_action( 'admin_init', array( $this, 'fresco_settings_init' ));
 		}
@@ -91,9 +88,7 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 					'fresco_ui_single' => 'outside',
 					'fresco_ui_group' => 'outside',
 					'fresco_ui_video' => 'outside',
-					'fresco_ui_woocommerce' => 'outside',
 					'fresco_group_thumbnails' => 'horizontal',
-					'fresco_thumbnails_woocommerce' => 'horizontal',
 				);
 
 				add_option( 'fresco_settings', $defaults );
@@ -131,29 +126,12 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 			);
 
 			add_settings_field( 
-				'fresco_ui_woocommerce', 
-				__( 'WooCommerce Close Button', 'fresco' ), 
-				array($this, 'fresco_ui_woocommerce_render'), 
-				'fresco_plugin_page', 
-				'fresco_plugin_page_section' 
-			);
-
-			add_settings_field( 
 				'fresco_group_thumbnails', 
 				__( 'Thumbnail Gallery Position', 'fresco' ), 
 				array($this, 'fresco_group_thumbnails_render'), 
 				'fresco_plugin_page', 
 				'fresco_plugin_page_section' 
 			);
-
-			add_settings_field( 
-				'fresco_thumbnails_woocommerce', 
-				__( 'WooCommerce Thumbnail Gallery Position', 'fresco' ), 
-				array($this, 'fresco_thumbnails_woocommerce_render'), 
-				'fresco_plugin_page', 
-				'fresco_plugin_page_section' 
-			);
-
 
 		}
 
@@ -209,23 +187,6 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 		}
 
 		/**
-		 * render select field for fresco UI woocommerce settings
-		 *
-		 * @since 1.0
-		 */
-
-		function fresco_ui_woocommerce_render() { 
-
-			$options = get_option( 'fresco_settings' );
-			?>
-			<select name='fresco_settings[fresco_ui_woocommerce]'>
-				<option value='outside' <?php selected( $options['fresco_ui_woocommerce'], 'outside' ); ?>>Outside (default)</option>
-				<option value='inside' <?php selected( $options['fresco_ui_woocommerce'], 'inside' ); ?>>Inside</option>
-			</select>
-		<?php
-		}
-
-		/**
 		 * render select field for fresco UI group thumbnail settings
 		 *
 		 * @since 1.0
@@ -239,24 +200,6 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 				<option value='horizontal' <?php selected( $options['fresco_group_thumbnails'], 'horizontal' ); ?>>Horizontal (default)</option>
 				<option value='vertical' <?php selected( $options['fresco_group_thumbnails'], 'vertical' ); ?>>Vertical</option>
 				<option value='false' <?php selected( $options['fresco_group_thumbnails'], 'false' ); ?>>Off</option>
-			</select>
-		<?php
-		}
-
-		/**
-		 * render select field for fresco woocommerce thumbnail settings
-		 *
-		 * @since 1.0
-		 */
-
-		function fresco_thumbnails_woocommerce_render() { 
-
-			$options = get_option( 'fresco_settings' );
-			?>
-			<select name='fresco_settings[fresco_thumbnails_woocommerce]'>
-				<option value='horizontal' <?php selected( $options['fresco_thumbnails_woocommerce'], 'horizontal' ); ?>>Horizontal (default)</option>
-				<option value='vertical' <?php selected( $options['fresco_thumbnails_woocommerce'], 'vertical' ); ?>>Vertical</option>
-				<option value='false' <?php selected( $options['fresco_thumbnails_woocommerce'], 'false' ); ?>>Off</option>
 			</select>
 		<?php
 		}
@@ -318,23 +261,6 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 
 			wp_enqueue_style( 'fresco_custom_css', $css_file, false, '1.0', 'screen' );
 
-		}
-
-		/**
-		 * remove default woocommerce lightbox and styles
-		 *
-		 * @since 1.0
-		 */
-
-		function woo_remove_lightboxes() {
-
-			if ( in_array( 'woocommerce/woocommerce.php', apply_filters('active_plugins', get_option( 'active_plugins' ) ) ) ) {
-  				wp_dequeue_style( 'woocommerce_prettyPhoto_css' );
-  				wp_dequeue_script( 'prettyPhoto' );
-  				wp_dequeue_script( 'prettyPhoto-init' );
-  				wp_dequeue_script( 'fancybox' );
-  				wp_dequeue_script( 'enable-lightbox' );
-			}
 		}
 
         	/**
@@ -432,38 +358,6 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 			$embed = apply_filters( 'oembed_detect_lightbox', $embed, $matches, $attr, $url, $rawattr );
 
     			return apply_filters( 'oembed_result', $embed, $url);
-		}
-
-        	/**
-         	* alter woocommerce image output for fresco lightbox
-         	*
-         	* @since 1.0
-         	*/
-		function fresco_woocommerce_lightbox($html) {
-
-			$position_option = get_option( 'fresco_settings' );
-			$position = "'" . $position_option['fresco_ui_woocommerce'] . "'";
-			$thumbnails = "'" . $position_option['fresco_thumbnails_woocommerce'] . "'";
-			$thumbnail_show = ($thumbnails == "'false'") ? 'false' : $thumbnails;
-
-			$fresco_attr = sprintf('class="fresco" data-fresco-group-options="ui: %s, thumbnails: %s"', $position, $thumbnail_show);
-
-   			$search = array(
-				'class="woocommerce-main-image zoom"',
-				'data-rel="prettyPhoto[product-gallery]"',
-				'class="attachment-shop_thumbnail"',
-				'class="zoom first"'
-  			);
-
-   			$replace = array(
-				$fresco_attr,
-				'data-fresco-group="[product-gallery]"',
-				'',
-				$fresco_attr
-			);
-
-   			$html = str_replace($search, $replace, $html);
-   			return $html;
 		}
 
         	/**
