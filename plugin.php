@@ -55,6 +55,8 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 		function __construct() {
 			add_action( 'wp_enqueue_scripts', array( $this, 'scripts' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'styles' ) );
+			add_filter( 'envira_gallery_output', array($this, 'envira_gallery_output'), 10, 2 );
+			add_filter( 'envira_gallery_output_link_attr', array($this, 'envira_gallery_output_link_attr') ,20, 4 );
 			add_filter( 'post_gallery', array( $this, 'gallery'), 10, 2 );
 			add_filter( 'media_send_to_editor', array( $this, 'media_filter'), 20, 3);
 			add_action( 'embed_oembed_html', array( $this, 'embed_html' ), 10, 4);
@@ -69,6 +71,7 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 		 *
 		 * @since 1.0
 		 */
+
 		function fresco_add_admin_menu() { 
 			add_options_page( 'Fresco Lightbox', 'Fresco Lightbox', 'manage_options', 'fresco_lightbox', array($this, 'fresco_lightbox_options_page' ));
 		}
@@ -78,6 +81,7 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 		 *
 		 * @since 1.0
 		 */
+
 		function fresco_settings_init() { 
 
 			register_setting( 'fresco_plugin_page', 'fresco_settings' );
@@ -300,6 +304,31 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 		}
 
         	/**
+         	* add fresco data attribs to envira gallery links
+         	*
+         	* @since 1.0
+         	*/
+
+		function envira_gallery_output_link_attr( $attrs, $item, $data, $i ) {
+   			$gallery_item = $i['gallery'][$item];
+   			$caption = $gallery_item['caption'];
+   			$group_id = $i['id'];
+   			$frescojs = ' data-fresco-group="envira-gallery-'. $group_id .'" data-fresco-caption="'. $caption .'"';
+   			return $attrs . $frescojs;
+		}
+
+        	/**
+         	* add fresco class to envira gallery links
+         	*
+         	* @since 1.0
+         	*/
+
+		function envira_gallery_output( $html, $data ) {
+			$html = str_replace( 'envira-gallery-link', 'envira-gallery-link fresco', $html);
+			return $html;
+		}
+
+        	/**
          	* filter youtube and vimeo videos for lightbox
          	*
          	* @since 1.0
@@ -473,3 +502,7 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 		}
    	}
 }
+
+
+
+
