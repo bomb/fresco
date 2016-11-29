@@ -55,8 +55,6 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 		function __construct() {
 			add_action( 'wp_enqueue_scripts', array( $this, 'scripts' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'styles' ) );
-			add_filter( 'envira_gallery_output', array($this, 'envira_gallery_output'), 10, 2 );
-			add_filter( 'envira_gallery_output_link_attr', array($this, 'envira_gallery_output_link_attr') ,20, 4 );
 			add_filter( 'post_gallery', array( $this, 'gallery'), 10, 2 );
 			add_filter( 'media_send_to_editor', array( $this, 'media_filter'), 20, 3);
 			add_action( 'embed_oembed_html', array( $this, 'embed_html' ), 10, 4);
@@ -304,31 +302,6 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 		}
 
         	/**
-         	* add fresco data attribs to envira gallery links
-         	*
-         	* @since 1.0
-         	*/
-
-		function envira_gallery_output_link_attr( $attrs, $item, $data, $i ) {
-   			$gallery_item = $i['gallery'][$item];
-   			$caption = $gallery_item['caption'];
-   			$group_id = $i['id'];
-   			$frescojs = ' data-fresco-group="envira-gallery-'. $group_id .'" data-fresco-caption="'. $caption .'"';
-   			return $attrs . $frescojs;
-		}
-
-        	/**
-         	* add fresco class to envira gallery links
-         	*
-         	* @since 1.0
-         	*/
-
-		function envira_gallery_output( $html, $data ) {
-			$html = str_replace( 'envira-gallery-link', 'envira-gallery-link fresco', $html);
-			return $html;
-		}
-
-        	/**
          	* filter youtube and vimeo videos for lightbox
          	*
          	* @since 1.0
@@ -426,9 +399,9 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
     			}
 
     			if ( $include ) {
-        
-        			$include = preg_replace( '/[^0-9,]+/', '', $include );
-        
+
+	      			$include = preg_replace( '/[^0-9,]+/', '', $include );
+
         			$_attachments = get_posts( array(
             				'include'        => $include,
             				'post_status'    => 'inherit',
@@ -439,15 +412,15 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
         			) );
 
         			$attachments = array();
-        
+
         			foreach ( $_attachments as $key => $val ) {
             				$attachments[$val->ID] = $_attachments[$key];
         			}
 
     				} elseif ( $exclude ) {
-        
+
         				$exclude = preg_replace( '/[^0-9,]+/', '', $exclude );
-        
+
         				$attachments = get_children( array(
             					'post_parent'    => $id,
             					'exclude'        => $exclude,
@@ -492,7 +465,8 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
     				foreach ( $attachments as $id => $attachment ) {
 					$srcset = (wp_get_attachment_image_srcset( $id, 'thumbnail')) ? 'srcset="' . wp_get_attachment_image_srcset( $id, 'thumbnail') . '" ' : '';
 					$sizes = (wp_get_attachment_image_sizes( $id, 'thumbnail')) ? 'sizes="' . wp_get_attachment_image_sizes( $id, 'thumbnail') . '"' : '';
-					$fresco_attr = sprintf('class="fresco thumbnail" data-fresco-group="gallery-%s" data-fresco-caption="%s" data-fresco-group-options="ui: %s, thumbnails: %s"', $post->ID, $post->post_title, $position, $thumbnail_show);
+					$caption = ($attachment->post_excerpt) ? $attachment->post_excerpt : $post->post_title;
+					$fresco_attr = sprintf('class="fresco thumbnail" data-fresco-group="gallery-%s" data-fresco-caption="%s" data-fresco-group-options="ui: %s, thumbnails: %s"', $post->ID, $caption, $position, $thumbnail_show);
 	       				$output .= '<a href="'. wp_get_attachment_url($id) .'" '. $fresco_attr. '><img src="'. wp_get_attachment_thumb_url($id) .'" class="fresco thumbnail" '. $srcset . $sizes .'></a>' . "\n";
     				}
 
