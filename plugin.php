@@ -290,7 +290,7 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 		}
 
 		/**
-		 * register oembed for images, and remove imgur.com default embed so lightbox can use imgur.com images
+		 * register oembed for image urls for the lightbox
 		 *
 		 * @since 1.0
 		 */
