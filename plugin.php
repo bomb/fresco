@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name: Fresco Lightbox
- * Plugin URI: http://github.com/sugar/fresco
+ * Plugin URI: http://github.com/chrismccoy/fresco
  * Description: Use this plugin to implement the fresco lightbox
  * Version: 1.0
  * Author: Chris McCoy
  * Author URI: http://github.com/chrismccoy
 
- * @copyright 2015
+ * @copyright 2017
  * @author Chris McCoy
  * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
@@ -57,9 +57,8 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 			add_action( 'wp_enqueue_scripts', array( $this, 'styles' ) );
 			add_filter( 'post_gallery', array( $this, 'gallery'), 10, 2 );
 			add_filter( 'media_send_to_editor', array( $this, 'media_filter'), 20, 3);
-			add_action( 'embed_oembed_html', array( $this, 'embed_html' ), 10, 4);
-			add_action( 'embed_oembed_html', array( $this, 'cloudup_embed_html' ), 10, 4);
 			add_action( 'init', array( $this, 'embeds' ));
+			add_filter( 'oembed_dataparse', array($this, 'oembed_services'), 10, 3);
 			add_action( 'admin_menu', array( $this, 'fresco_add_admin_menu' ));
 			add_action( 'admin_init', array( $this, 'fresco_settings_init' ));
 		}
@@ -297,48 +296,8 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 		 */
 
 		function embeds() { 
-			wp_embed_register_handler( 'detect_lightbox', '#^http://.+\.(jpe?g|gif|png)$#i', array( $this, 'wp_embed_register_handler') , 10, 3);
-			wp_oembed_remove_provider( '#https?://(.+\.)?imgur\.com/.*#i' );
+			wp_embed_register_handler( 'detect_lightbox', '#^https?://.+\.(jpe?g|gif|png)$#i', array( $this, 'wp_embed_register_handler') , 10, 3);
 		}
-
-        	/**
-         	* filter youtube and vimeo videos for lightbox
-         	*
-         	* @since 1.0
-         	*/
-
-		function embed_html( $html, $url, $args, $post_ID ) {
-
-			$position_option = get_option( 'fresco_settings' );
-			$position = "'" . $position_option['fresco_ui_video'] . "'";
-
-			$screenshot = wp_get_attachment_url( get_post_thumbnail_id($post_ID) ) ? wp_get_attachment_url( get_post_thumbnail_id($post_ID) ) : 'http://fakeimg.pl/439x230/282828/eae0d0/?text=Click%20to%20Play!';
-
-                        if ( strstr($url, 'youtube.com') || strstr($url, 'vimeo.com')) {
-				$fresco_attr = sprintf('class="fresco" data-fresco-options="ui: %s"', $position);
-      		        	$html = sprintf('<a href="%1$s" '. $fresco_attr .'><img src="%2$s" /></a>', $url, $screenshot);
-        	        }
-
-                     	return $html;
-            	}
-
-                /**
-                * filter cloudup images for lightbox
-                *
-                * @since 1.0
-                */
-
-                function cloudup_embed_html( $html, $url, $args, $post_ID ) {
-
-                        if(preg_match('/<a href="(https?:\/\/cloudup\.com\/.*)"><img [^>]*src=\"(https?:\/\/cldup\.com\/[^\"]+)\"[^>]*><\/a>/', $html, $matches)) {
-				$position_option = get_option( 'fresco_settings' );
-				$position = "'" . $position_option['fresco_ui_single'] . "'";
-                                $fresco_attr = sprintf('class="fresco thumbnail" data-fresco-options="side: %s"', $position);
-                                $html = '<a href="'. $matches[2] .'" '. $fresco_attr .'><img src="'. $matches[2].'"></a>';
-                        }
-
-                        return $html;
-                }
 
 
         	/**
@@ -352,14 +311,46 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 
 			$position_option = get_option( 'fresco_settings' );
 			$position = "'" . $position_option['fresco_ui_single'] . "'";
-
-    			if (preg_match('#^http://.+\.(jpe?g|gif|png)$#i', $url)) {
-       	       			$embed = sprintf('<a href="%s" class="fresco thumbnail" data-fresco-group="gallery-%s" data-fresco-options="ui: %s"><img src="%s"></a>', $matches[0], $post->ID, $position, $matches[0]);
-    			}
-
+      			$embed = sprintf('<a href="%s" class="fresco thumbnail" data-fresco-group="gallery-%s" data-fresco-options="ui: %s"><img src="%s" width="%d" height="%d" /></a>', $url, $post->ID, $position, $url, get_option('thumbnail_size_w'), get_option('thumbnail_size_h'));
 			$embed = apply_filters( 'oembed_detect_lightbox', $embed, $matches, $attr, $url, $rawattr );
 
     			return apply_filters( 'oembed_result', $embed, $url);
+		}
+
+        	/**
+         	* filter instagram, flickr, cloudup, imgur, youtube, and vimeo for lightbox
+         	*
+         	* @since 1.0
+         	*/
+
+		function oembed_services($html, $data, $url) {
+
+			$position_option = get_option( 'fresco_settings' );
+			$position = "'" . $position_option['fresco_ui_single'] . "'";
+
+        		if ($data->provider_name == 'Instagram') {
+                		$html = sprintf('<a href="%s" class="fresco thumbnail" data-fresco-options="ui: %s"><img src="%s" width="%d" height="%d" /></a>', esc_url($data->thumbnail_url), $position, esc_url($data->thumbnail_url), get_option('thumbnail_size_w'), get_option('thumbnail_size_h'));
+			}
+
+        		if ($data->provider_name == 'Flickr') {
+				$url = str_replace('_z.jpg','_b.jpg', $data->url);
+                		$html = sprintf('<a href="%s" class="fresco thumbnail" data-fresco-options="ui: %s"><img src="%s" width="%d" height="%d" /></a>', esc_url($url), $position, esc_url($url), get_option('thumbnail_size_w'), get_option('thumbnail_size_h'));
+			}
+
+        		if ($data->provider_name == 'Cloudup') {
+                		$html = sprintf('<a href="%s" class="fresco thumbnail" data-fresco-options="ui: %s"><img src="%s" width="%d" height="%d" /></a>', esc_url($data->url), $position, esc_url($data->url),  get_option('thumbnail_size_w'), get_option('thumbnail_size_h'));
+			}
+
+      			if ($data->provider_name == 'Imgur') {
+                		$html = sprintf('<a href="%s" class="fresco thumbnail" data-fresco-options="ui: %s"><img src="%s" width="%d" height="%d" /></a>', esc_url($url), $position, esc_url($url), get_option('thumbnail_size_w'), get_option('thumbnail_size_h'));
+			}
+
+      			if ($data->provider_name == 'YouTube' || $data->provider_name == 'Vimeo') {
+                        	$screenshot = wp_get_attachment_url( get_post_thumbnail_id($post_ID) ) ? wp_get_attachment_url( get_post_thumbnail_id($post_ID) ) : 'http://fakeimg.pl/439x230/282828/eae0d0/?text=Click%20to%20Play!';
+                		$html = sprintf('<a href="%s" class="fresco" data-fresco-options="ui: %s"><img src="%s" /></a>', esc_url($url), $position, $screenshot);
+			}
+
+			return $html;
 		}
 
         	/**
@@ -476,7 +467,3 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 		}
    	}
 }
-
-
-
-
