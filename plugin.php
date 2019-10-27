@@ -234,7 +234,7 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 		 */
 
 		function scripts() {
-			wp_enqueue_script( 'fresco_js', plugins_url( 'js/fresco.js', __FILE__ ), array( 'jquery' ), '1.0', false );
+			wp_enqueue_script( 'fresco_js', plugins_url( 'js/fresco.min.js', __FILE__ ), array( 'jquery' ), '1.0', false );
 
             		global $is_IE;
 
