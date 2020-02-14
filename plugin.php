@@ -58,6 +58,7 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 			add_filter( 'post_gallery', array( $this, 'gallery'), 10, 2 );
 			add_filter( 'media_send_to_editor', array( $this, 'media_filter'), 20, 3);
 			add_action( 'init', array( $this, 'embeds' ));
+			add_action( 'init', array( $this, 'block' ));
 			add_filter( 'oembed_dataparse', array($this, 'oembed_services'), 10, 3);
 			add_action( 'admin_menu', array( $this, 'fresco_add_admin_menu' ));
 			add_action( 'admin_init', array( $this, 'fresco_settings_init' ));
@@ -287,6 +288,22 @@ if( !class_exists( 'Fresco_Lightbox' ) ) {
 			}
 
 			return $html;
+		}
+
+		/**
+		 * convert block gallery into fresco gallery shortcode
+		 *
+		 * @since 1.0
+		 */
+
+		function block() {
+			if(function_exists('parse_blocks') ) {
+       				register_block_type( 'core/gallery', array(
+               				'render_callback' => function($attributes, $content) {
+                       				return '[gallery ids="' . implode( ',', $attributes['ids'] ) . '"]';
+               				})
+       				);
+			}
 		}
 
 		/**

@@ -1166,14 +1166,14 @@
 .fr-window-skin-fresco .fr-close-icon,
 .fr-window-skin-fresco .fr-thumbnails-side-button-icon,
 .fr-window-skin-fresco .fr-error-icon {
-  background-image: url("fresco/skins/fresco/sprite.svg");
+  background-image: url("skins/fresco/sprite.svg");
 }
 /* fallback png sprite */
 .fr-window-skin-fresco.fr-no-svg .fr-side-button-icon,
 .fr-window-skin-fresco.fr-no-svg .fr-close-icon,
 .fr-window-skin-fresco.fr-no-svg .fr-thumbnails-side-button-icon,
 .fr-window-skin-fresco .fr-error-icon {
-  background-image: url("fresco/skins/fresco/sprite.png");
+  background-image: url("skins/fresco/sprite.png");
 }
 
 .fr-window-skin-fresco .fr-error-icon {
